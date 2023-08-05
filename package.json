@@ -49,5 +49,6 @@
 		"oauth",
 		"astro-auth",
 		"astro-integration"
-	]
+	],
+	"packageManager": "pnpm@8.6.9"
 }
