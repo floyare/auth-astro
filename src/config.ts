@@ -1,6 +1,6 @@
 import type { PluginOption } from 'vite'
 
-export const virtualConfigModule = (configFile: string = "./auth.config"): PluginOption => {
+export const virtualConfigModule = (configFile: string = './auth.config'): PluginOption => {
 	const virtualModuleId = 'auth:config'
 	const resolvedId = '\0' + virtualModuleId
 
@@ -13,7 +13,7 @@ export const virtualConfigModule = (configFile: string = "./auth.config"): Plugi
 		},
 		load: (id) => {
 			if (id === resolvedId) {
-				return `import authConfig from "${configFile}"; export default authConfig`
+				return `export {default} from "${configFile}";`
 			}
 		},
 	}
