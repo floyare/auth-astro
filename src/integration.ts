@@ -1,5 +1,4 @@
 import type { AstroIntegration } from 'astro'
-import { dirname, join } from 'path'
 import { type AstroAuthConfig, virtualConfigModule } from './config'
 
 export default (config: AstroAuthConfig = {}): AstroIntegration => ({
@@ -14,16 +13,17 @@ export default (config: AstroAuthConfig = {}): AstroIntegration => ({
 			updateConfig({
 				vite: {
 					plugins: [virtualConfigModule(config.configFile)],
+					optimizeDeps: { exclude: ['auth:config'] }
 				},
 			})
 
 			config.prefix ??= '/api/auth'
 
 			if (config.injectEndpoints !== false) {
-				const currentDir = dirname(import.meta.url.replace('file://', ''))
+				const currentDir = new URL('.', import.meta.url).toString().replace('file://', '').substring(1)
 				injectRoute({
 					pattern: config.prefix + '/[...auth]',
-					entryPoint: join(currentDir + '/api/[...auth].ts'),
+					ntryPoint: currentDir + 'api/[...auth].ts',
 				})
 			}
 
@@ -31,7 +31,10 @@ export default (config: AstroAuthConfig = {}): AstroIntegration => ({
 				astroConfig.adapter.name
 			)
 
-			if (!edge && globalThis.process && process.versions.node < '19.0.0' || (process.env.NODE_ENV === 'development' && edge)) {
+			if (
+				(!edge && globalThis.process && process.versions.node < '19.0.0') ||
+				(process.env.NODE_ENV === 'development' && edge)
+			) {
 				injectScript(
 					'page-ssr',
 					`import crypto from "node:crypto";
