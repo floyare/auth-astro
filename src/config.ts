@@ -1,4 +1,5 @@
 import type { PluginOption } from 'vite'
+import type { AuthConfig } from '@auth/core'
 
 export const virtualConfigModule = (configFile: string = './auth.config'): PluginOption => {
 	const virtualModuleId = 'auth:config'
@@ -35,3 +36,27 @@ export interface AstroAuthConfig {
    */
   configFile?: string
 }
+
+export interface FullAuthConfig extends AstroAuthConfig, AuthConfig {}
+
+/**
+ * Convenience function used to provide autocomplete and type safety to the auth configuration without using JSDoc notations or explicit TypeScript annotations. Does not change anything functionally
+ * @param config Configuration
+ * @returns The configuration passed
+ * @example
+ * auth.config.ts
+ * ```js
+ * export default defineConfig({
+ *   providers: [
+ *     GitHub({
+ *      clientId: import.meta.env.GITHUB_ID,
+ *      clientSecret: import.meta.env.GITHUB_SECRET
+ *     })
+ *   ],
+ *   session: {
+ *     strategy: 'jwt'
+ *   }
+ * });
+ * ```
+ */
+export const defineConfig = (config: FullAuthConfig) => config
